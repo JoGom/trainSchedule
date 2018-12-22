@@ -27,14 +27,22 @@ $(document).ready(function(){
     var firstT = childSnap.val().firstTrain;
     var freq = childSnap.val().frequency;
 
-    var currentTime = moment().format("h:mm");
-    var minuteSince = moment().diff(moment(firstT, "HH:mm"), "minutes");
-    console.log(currentTime);
+    var currentTime = moment().format("hh:mm");
+    var minuteSince = Math.abs(moment().diff(moment(firstT, "HH:mm"), "minutes"));
+    var num= (parseInt(minuteSince)/parseInt(freq))%1;
+    var minsLeft = Math.round(parseInt(freq) - (num*parseInt(freq)));
+    var nextArrival = moment().add(minsLeft, 'm').format("h:mm A");
     console.log(minuteSince);
+    console.log(currentTime);
+    console.log(num);
+    console.log(minsLeft);
+    console.log(nextArrival);
     var newRow = $("<tr>").append(
         $("<td>").text(name),
         $("<td>").text(destin),
-        $("<td>").text(freq)
+        $("<td>").text(freq),
+        $("<td>").text(nextArrival),
+        $("<td>").text(minsLeft)
       );
       // Append the new row to the table
       $("#trainTable > tbody").append(newRow);
@@ -46,13 +54,11 @@ $(document).ready(function(){
 
   });
 
-
-
   function getInput(){
     var inputObj = {
         trainName: $("#train-input").val().trim(),
         destination: $("#destination-input").val().trim(),
-        firstTrain: moment($("#time-input").val().trim(), "HH:mm").format("H:mm"),
+        firstTrain: moment($("#time-input").val().trim(), "HH:mm").format("HH:mm"),
         frequency: $("#frequency-input").val().trim()
     };
 
@@ -63,14 +69,6 @@ $(document).ready(function(){
     $("#time-input").val("");
     $("#frequency-input").val("");
 
-  }
-
-  function nextArrival(){
-
-  }
-
-  function printTable(){
-   
   }
 
 });
