@@ -12,7 +12,6 @@ $(document).ready(function(){
   firebase.initializeApp(config);
 
   var database = firebase.database();
-  var inputObj = {};
 
   //button for adding more items to the table and database
   $("#add-btn").on("click", function(event){
@@ -20,31 +19,59 @@ $(document).ready(function(){
     getInput();
   });
 
+  //grabs the values of the current object in the database
+  database.ref().on("child_added", function(childSnap) {
+
+    var name = childSnap.val().trainName;
+    var destin = childSnap.val().destination;
+    var firstT = childSnap.val().firstTrain;
+    var freq = childSnap.val().frequency;
+
+    var currentTime = moment().format("h:mm");
+    var minuteSince = moment().diff(moment(firstT, "HH:mm"), "minutes");
+    console.log(currentTime);
+    console.log(minuteSince);
+    var newRow = $("<tr>").append(
+        $("<td>").text(name),
+        $("<td>").text(destin),
+        $("<td>").text(freq)
+      );
+      // Append the new row to the table
+      $("#trainTable > tbody").append(newRow);
+      
+    console.log(name);
+    console.log(destin);
+    console.log(firstT);
+    console.log(freq);
+
+  });
+
 
 
   function getInput(){
-    var trainNameIn = $("#train-input").val().trim();
-    var destinationIn= $("#destination-input").val().trim();
-    var firstTrainIn = moment($("#time-input").val().trim(), "HH:mm").format("H:mm");
-    var frequencyIn = $("#frequency-input").val().trim();
-
-    inputObj = {
-        trainName: trainNameIn,
-        destination: destinationIn,
-        firstTrain: firstTrainIn,
-        frequency: frequencyIn
+    var inputObj = {
+        trainName: $("#train-input").val().trim(),
+        destination: $("#destination-input").val().trim(),
+        firstTrain: moment($("#time-input").val().trim(), "HH:mm").format("H:mm"),
+        frequency: $("#frequency-input").val().trim()
     };
+
     database.ref().push(inputObj);
+
     $("#train-input").val("");
     $("#destination-input").val("");
     $("#time-input").val("");
     $("#frequency-input").val("");
-    console.log(inputObj.trainName);
-    console.log(inputObj.destination);
-    console.log(inputObj.firstTrain);
-    console.log(inputObj.frequency);
+
   }
 
+  function nextArrival(){
+
+  }
+
+  function printTable(){
+   
+  }
 
 });
 
